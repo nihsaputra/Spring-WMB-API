@@ -20,7 +20,4 @@ public class DiningTable {
     @Column(unique = true)
     private String tableName;
 
-    @OneToMany(mappedBy = "diningTable")
-    private List<Order> orders;
-
 }
