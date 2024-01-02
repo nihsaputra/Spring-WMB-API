@@ -7,9 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthRequest {
+public class MenuRequest {
 
-    private String email;
-    private String password;
+    private String name;
+    private Long price;
 
 }

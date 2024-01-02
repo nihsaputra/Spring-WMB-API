@@ -67,14 +67,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AuthResponse create(AuthRequest request) {
-        Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByEmail(request.getEmial());
+        Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByEmail(request.getEmail());
         if (optionalUserCredential.isPresent())throw new ResponseStatusException(HttpStatus.CONFLICT,"email existed");
 
         Role roleCustomer = roleService.getOrSave(ERole.ROLE_CUSTOMER);
 
         String hashPassword = passwordEncoder.encode(request.getPassword());
         UserCredential buildUserCredential = UserCredential.builder()
-                .email(request.getEmial())
+                .email(request.getEmail())
                 .password(hashPassword)
                 .roles(List.of(roleCustomer))
                 .build();
@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AuthResponse createAdmin(AuthRequest request) {
-        Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByEmail(request.getEmial());
+        Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByEmail(request.getEmail());
         if (optionalUserCredential.isPresent())throw new ResponseStatusException(HttpStatus.CONFLICT,"email existed");
 
         Role roleCustomer = roleService.getOrSave(ERole.ROLE_CUSTOMER);
@@ -106,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
 
         String hashPassword = passwordEncoder.encode(request.getPassword());
         UserCredential buildUserCredential = UserCredential.builder()
-                .email(request.getEmial())
+                .email(request.getEmail())
                 .password(hashPassword)
                 .roles(List.of(roleCustomer,roleAdmin))
                 .build();
@@ -129,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
     public String login(AuthRequest request) {
 
         // login dari spring security untuk authentication
-        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(request.getEmial(),request.getPassword());
+        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         // simpan sesi user di database spring boot sementara, bertujuan untuk mengakses resource tertentu di kemudian

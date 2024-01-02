@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -17,5 +19,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional(rollbackFor = Exception.class)
     public void create(Customer customer) {
         customerRepository.save(customer);
+    }
+
+    @Override
+    public List<Customer> getAll() {
+        List<Customer> findAll = customerRepository.findAll();
+        return findAll;
     }
 }
