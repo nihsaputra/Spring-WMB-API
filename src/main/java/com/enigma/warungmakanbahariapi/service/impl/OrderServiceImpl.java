@@ -25,7 +25,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Order create(OrderRequest request) {
-
         // customerId
         Customer customer = customerService.getById(request.getCustomerId());
 
@@ -35,27 +34,27 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         DiningTable diningTable = diningTableService.getOrSave(diningTableRequest);
 
-//        // transType
-//        TransType transType = transTypeService.getOrSave(request.getTransType());
+        // transType
+        TransType transType = transTypeService.getOrSave(request.getTransType());
 
         // Save Order
         Order buildOrder = Order.builder()
                 .customer(customer)
                 .diningTable(diningTable)
-//                .transType(transType)
+                .transType(transType)
                 .transDate(new Date())
                 .build();
         Order order = orderRepository.saveAndFlush(buildOrder);
 
 
-//        // Kirim OrderDetail
-//        OrderDetailRequest orderDetailRequest = OrderDetailRequest.builder()
-//                .orderId(order)
-//                .orderList(request.getOrderList())
-//                .build();
-//        orderDetailService.create(orderDetailRequest);
-
+        // Kirim OrderDetail
+        OrderDetailRequest orderDetailRequest = OrderDetailRequest.builder()
+                .orderId(order)
+                .orderList(request.getOrderList())
+                .build();
+        orderDetailService.create(orderDetailRequest);
 
         return order;
     }
+
 }

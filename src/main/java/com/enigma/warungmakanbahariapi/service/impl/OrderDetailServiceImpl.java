@@ -8,8 +8,13 @@ import com.enigma.warungmakanbahariapi.repository.OrderDetailRepository;
 import com.enigma.warungmakanbahariapi.service.MenuService;
 import com.enigma.warungmakanbahariapi.service.OrderDetailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +35,19 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                     .build();
             orderDetailRepository.save(buildOrderDetail);
         }
+    }
+
+    @Override
+    public OrderDetail getById(String id) {
+        Optional<OrderDetail> orderDetail = orderDetailRepository.findById(id);
+        if (!orderDetail.isPresent()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"not found");
+
+        return orderDetail.get();
+    }
+
+    @Override
+    public List<OrderDetail> getAll() {
+       return orderDetailRepository.findAll();
     }
 
 }
