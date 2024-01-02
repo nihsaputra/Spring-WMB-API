@@ -54,7 +54,12 @@ public class AuthServiceImpl implements AuthService {
                 .roles(List.of(roleCustomer,roleAdmin,roleSuperAdmin))
                 .build();
 
-        userCredentialRepository.saveAndFlush(buildUserCredential);
+        UserCredential userCredential = userCredentialRepository.saveAndFlush(buildUserCredential);
+
+        Customer buildCustomer = Customer.builder()
+                .userCredential(userCredential)
+                .build();
+        customerService.create(buildCustomer);
 
 
     }
@@ -83,6 +88,36 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         customerService.create(buildCustomer);
 
+
+        return AuthResponse.builder()
+                .email(userCredential.getEmail())
+                .roles(listRole)
+                .build();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public AuthResponse createAdmin(AuthRequest request) {
+        Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByEmail(request.getEmial());
+        if (optionalUserCredential.isPresent())throw new ResponseStatusException(HttpStatus.CONFLICT,"email existed");
+
+        Role roleCustomer = roleService.getOrSave(ERole.ROLE_CUSTOMER);
+        Role roleAdmin = roleService.getOrSave(ERole.ROLE_ADMIN);
+
+        String hashPassword = passwordEncoder.encode(request.getPassword());
+        UserCredential buildUserCredential = UserCredential.builder()
+                .email(request.getEmial())
+                .password(hashPassword)
+                .roles(List.of(roleCustomer,roleAdmin))
+                .build();
+
+        UserCredential userCredential = userCredentialRepository.saveAndFlush(buildUserCredential);
+        List<String> listRole = userCredential.getRoles().stream().map(role -> role.getRole().name()).toList();
+
+        Customer buildCustomer = Customer.builder()
+                .userCredential(userCredential)
+                .build();
+        customerService.create(buildCustomer);
 
         return AuthResponse.builder()
                 .email(userCredential.getEmail())

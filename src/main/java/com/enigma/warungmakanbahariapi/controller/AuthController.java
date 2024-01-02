@@ -7,6 +7,7 @@ import com.enigma.warungmakanbahariapi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -19,6 +20,20 @@ public class AuthController {
     @PostMapping(path = "/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request){
         AuthResponse authResponse = authService.create(request);
+
+        WebResponse<AuthResponse> response = WebResponse.<AuthResponse>builder()
+                .status(HttpStatus.CREATED.getReasonPhrase())
+                .message("successfuly create new account")
+                .data(authResponse)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PostMapping(path = "/register/admin")
+    public ResponseEntity<?> registerAdmin(@RequestBody AuthRequest request){
+        AuthResponse authResponse = authService.createAdmin(request);
 
         WebResponse<AuthResponse> response = WebResponse.<AuthResponse>builder()
                 .status(HttpStatus.CREATED.getReasonPhrase())

@@ -9,5 +9,7 @@ public interface AuthService {
 
     String login(AuthRequest request);
 
+    AuthResponse createAdmin(AuthRequest request);
+
 
 }
