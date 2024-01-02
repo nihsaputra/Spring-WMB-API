@@ -1,5 +1,7 @@
 package com.enigma.warungmakanbahariapi.security;
 
+import com.enigma.warungmakanbahariapi.model.JwtClaim;
+import com.enigma.warungmakanbahariapi.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,47 +20,47 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter  {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-//    private final JwtUtil jwtUtil;
-//    private final UserService userService;
-//
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request,
-//                                    HttpServletResponse response,
-//                                    FilterChain filterChain) throws ServletException, IOException {
-//
-//        try {
-//            // valid token
-//            String token = parseJTW(request);
-//
-//            if (token != null && jwtUtil.VeryFyJwtToken(token)){
-//                JwtClaim userInfo = jwtUtil.getUserInfoByToken(token);
-//
-//                UserDetails userDetails = userService.loadUserById(userInfo.getUserId());
-//
-//                UsernamePasswordAuthenticationToken authenticatin = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-//
-//                // simpan informasi tambahan: ip.address, web browser
-//                authenticatin.setDetails(new WebAuthenticationDetails(request));
-//                // simpan sesi user ke database security context holder
-//                SecurityContextHolder.getContext().setAuthentication(authenticatin);
-//
-//            }
-//        }catch (Exception e){
-//            log.error("cannot set user authentication: {} ", e.getMessage());
-//        }
-//
-//        // melanjutkan ke controller
-//        filterChain.doFilter(request,response);
-//    }
-//
-//    private String parseJTW(HttpServletRequest request){
-//        String token = request.getHeader("Authorization");
-//        if (token != null && token.startsWith("Bearer ")){
-//            return token.substring(7);
-//        }
-//        return null;
-//    }
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        try {
+            // valid token
+            String token = parseJTW(request);
+
+            if (token != null && jwtUtil.VeryFyJwtToken(token)){
+                JwtClaim userInfo = jwtUtil.getUserInfoByToken(token);
+
+                UserDetails userDetails = userService.loadUserById(userInfo.getUserId());
+
+                UsernamePasswordAuthenticationToken authenticatin = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+
+                // simpan informasi tambahan: ip.address, web browser
+                authenticatin.setDetails(new WebAuthenticationDetails(request));
+                // simpan sesi user ke database security context holder
+                SecurityContextHolder.getContext().setAuthentication(authenticatin);
+
+            }
+        }catch (Exception e){
+            log.error("cannot set user authentication: {} ", e.getMessage());
+        }
+
+        // melanjutkan ke controller
+        filterChain.doFilter(request,response);
+    }
+
+    private String parseJTW(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")){
+            return token.substring(7);
+        }
+        return null;
+    }
 
 }
