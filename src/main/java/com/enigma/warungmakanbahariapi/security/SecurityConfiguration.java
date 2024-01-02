@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                         request.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/menus").permitAll()
+                                .requestMatchers("/api/tables").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

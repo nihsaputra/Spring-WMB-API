@@ -3,6 +3,8 @@ package com.enigma.warungmakanbahariapi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -17,5 +19,8 @@ public class DiningTable {
 
     @Column(unique = true)
     private String tableName;
+
+    @OneToMany(mappedBy = "diningTable")
+    private List<Order> orders;
 
 }

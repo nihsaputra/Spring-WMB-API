@@ -13,6 +13,8 @@ import com.enigma.warungmakanbahariapi.service.CustomerService;
 import com.enigma.warungmakanbahariapi.service.RoleService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

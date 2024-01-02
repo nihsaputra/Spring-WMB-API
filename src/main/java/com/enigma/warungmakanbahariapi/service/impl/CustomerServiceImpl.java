@@ -6,6 +6,7 @@ import com.enigma.warungmakanbahariapi.entity.UserCredential;
 import com.enigma.warungmakanbahariapi.model.request.CustomerRequest;
 import com.enigma.warungmakanbahariapi.model.response.CustomerResponse;
 import com.enigma.warungmakanbahariapi.repository.CustomerRepository;
+import com.enigma.warungmakanbahariapi.service.AuthService;
 import com.enigma.warungmakanbahariapi.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -89,6 +90,6 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "forbidden");
             return optionalCustomer.get();
         }
-       return optionalCustomer.get();
+        return optionalCustomer.get();
     }
 }
